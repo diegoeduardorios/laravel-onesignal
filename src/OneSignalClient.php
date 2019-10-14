@@ -164,7 +164,7 @@ class OneSignalClient
                 "en" => $headings
             );
         }
-        
+
         if(isset($subtitle)){
             $params['subtitle'] = array(
                 "en" => $subtitle
@@ -257,7 +257,7 @@ class OneSignalClient
                 "en" => $headings
             );
         }
-        
+
         if(isset($subtitle)){
             $params['subtitle'] = array(
                 "en" => $subtitle
@@ -299,7 +299,7 @@ class OneSignalClient
                 "en" => $headings
             );
         }
-        
+
         if(isset($subtitle)){
             $params['subtitle'] = array(
                 "en" => $subtitle
@@ -341,7 +341,7 @@ class OneSignalClient
                 "en" => $headings
             );
         }
-        
+
         if(isset($subtitle)){
             $params['subtitle'] = array(
                 "en" => $subtitle
@@ -408,7 +408,7 @@ class OneSignalClient
         $this->usesJSON();
 
         $endpoint = self::ENDPOINT_NOTIFICATIONS;
-        
+
         if(!$app_id) {
             $app_id = $this->appId;
         }
@@ -424,6 +424,48 @@ class OneSignalClient
         }
 
         return $this->get($endpoint);
+    }
+
+    /**
+     * Create a App
+     * https://documentation.onesignal.com/reference#create-an-app
+     * @param array $parameters
+     * @return mixed
+     */
+    public function createApp($parameters = []){
+        $this->requiresUserAuth();
+        $this->usesJSON();
+
+        $parameters = array_merge($parameters, $this->additionalParams);
+
+        if (empty($parameters['name'])) {
+            throw new \Exception('The `name` param is required as string to create an App');
+        }
+
+        $this->headers['body'] = json_encode($parameters);
+
+        return $this->post(self::ENDPOINT_APPS);
+    }
+
+    /**
+     * Update a App
+     * https://documentation.onesignal.com/reference#update-an-app
+     * @param array $parameters
+     * @param string $app_id
+     * @return mixed
+     */
+    public function updateApp($parameters = [], $app_id = null){
+        $this->requiresUserAuth();
+        $this->usesJSON();
+
+        if(!$app_id)
+            $app_id = $this->appId;
+
+        $parameters = array_merge($parameters, $this->additionalParams);
+
+        $this->headers['body'] = json_encode($parameters);
+
+        return $this->put(self::ENDPOINT_APPS . '/'.$app_id);
     }
 
     public function getApp($app_id = null) {
